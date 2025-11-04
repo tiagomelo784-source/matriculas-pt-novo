@@ -19,24 +19,38 @@
       background: var(--dark);
       color: white;
       overflow-x: hidden;
+      position: relative;
     }
 
     /* Vídeo de fundo - Porsche vermelho a acelerar */
     #bg-video {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2;
-      filter: brightness(0.3) contrast(1.2);
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: -3; /* Atrás do overlay */
+      filter: brightness(0.35) contrast(1.3);
     }
 
-    /* Overlay gradiente */
+    /* Overlay gradiente (em cima do vídeo) */
     .overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-      background: linear-gradient(135deg, rgba(0,210,255,0.2), rgba(255,107,203,0.2));
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -2; /* Em cima do vídeo, atrás do conteúdo */
+      background: linear-gradient(135deg, rgba(10,10,10,0.6), rgba(0,210,255,0.1));
+      pointer-events: none;
+    }
+
+    /* Conteúdo principal (em cima de tudo) */
+    .content {
+      position: relative;
+      z-index: 1;
     }
 
     /* Header */
     header {
       text-align: center; padding: 100px 20px 60px;
-      position: relative;
     }
     .logo {
       font-size: 4.5rem; font-weight: 900;
@@ -46,7 +60,7 @@
     }
     @keyframes neon { from { text-shadow: 0 0 20px var(--primary); } to { text-shadow: 0 0 40px var(--secondary); } }
     .tagline {
-      font-size: 1.4rem; margin: 20px 0; color: #ddd;
+      font-size: 1.4rem; margin: 20px 0; color: #eee;
     }
 
     /* Contador animado */
@@ -155,75 +169,81 @@
 <body>
 
   <!-- Vídeo de fundo - Porsche vermelho a acelerar -->
-  <video id="bg-video" autoplay muted loop playsinline>
+  <video id="bg-video" autoplay muted loop playsinline preload="auto">
     <source src="https://videos.pexels.com/video-files/8549544/8549544-hd_1920_1080_30fps.mp4" type="video/mp4">
+    Your browser does not support the video tag.
   </video>
+
+  <!-- Overlay em cima do vídeo -->
   <div class="overlay"></div>
 
-  <header>
-    <div class="logo">MatriculasPT</div>
-    <p class="tagline">A tua base de dados de veículos em Portugal — grátis, rápida e precisa</p>
+  <!-- Conteúdo principal -->
+  <div class="content">
+    <header>
+      <div class="logo">MatriculasPT</div>
+      <p class="tagline">A tua base de dados de veículos em Portugal — grátis, rápida e precisa</p>
 
-    <div class="counter">
-      <div class="count-box">
-        <h3 class="count" data-target="50000">0</h3>
-        <p>Consultas Realizadas</p>
+      <div class="counter">
+        <div class="count-box">
+          <h3 class="count" data-target="50000">0</h3>
+          <p>Consultas Realizadas</p>
+        </div>
+        <div class="count-box">
+          <h3 class="count" data-target="150">0</h3>
+          <p>Veículos na Base</p>
+        </div>
+        <div class="count-box">
+          <h3 class="count" data-target="99.9">0</h3>
+          <p>Precisão</p>
+        </div>
       </div>
-      <div class="count-box">
-        <h3 class="count" data-target="150">0</h3>
-        <p>Veículos na Base</p>
+
+      <div class="search-container">
+        <input type="text" id="matricula" placeholder="Insere a matrícula (ex: AA-00-AA)" maxlength="8" />
+        <button id="searchBtn">Search</button>
       </div>
-      <div class="count-box">
-        <h3 class="count" data-target="99.9">0</h3>
-        <p>Precisão</p>
+    </header>
+
+    <section class="features">
+      <div class="feature-card">
+        <i class="fas fa-bolt"></i>
+        <h3>Instantâneo</h3>
+        <p>Resultado em menos de 1 segundo</p>
       </div>
-    </div>
+      <div class="feature-card">
+        <i class="fas fa-shield-alt"></i>
+        <h3>Seguro</h3>
+        <p>Dados anónimos e protegidos</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-mobile-alt"></i>
+        <h3>Responsivo</h3>
+        <p>Funciona em qualquer dispositivo</p>
+      </div>
+    </section>
 
-    <div class="search-container">
-      <input type="text" id="matricula" placeholder="Insere a matrícula (ex: AA-00-AA)" maxlength="8" />
-      <button id="searchBtn"><i class="fas fa-search"></i></button>
-    </div>
-  </header>
+    <div id="result"></div>
 
-  <section class="features">
-    <div class="feature-card">
-      <i class="fas fa-bolt"></i>
-      <h3>Instantâneo</h3>
-      <p>Resultado em menos de 1 segundo</p>
-    </div>
-    <div class="feature-card">
-      <i class="fas fa-shield-alt"></i>
-      <h3>Seguro</h3>
-      <p>Dados anónimos e protegidos</p>
-    </div>
-    <div class="feature-card">
-      <i class="fas fa-mobile-alt"></i>
-      <h3>Responsivo</h3>
-      <p>Funciona em qualquer dispositivo</p>
-    </div>
-  </section>
+    <section class="testimonials">
+      <div class="testimonial">
+        "Finalmente consigo saber tudo sobre um carro antes de comprar! Recomendo!"
+        <div class="author">— João Silva, Lisboa</div>
+      </div>
+      <div class="testimonial">
+        "Usei para verificar a minha moto. Dados exatos e peças com preços reais."
+        <div class="author">— Ana Costa, Porto</div>
+      </div>
+    </section>
 
-  <div id="result"></div>
-
-  <section class="testimonials">
-    <div class="testimonial">
-      "Finalmente consigo saber tudo sobre um carro antes de comprar! Recomendo!"
-      <div class="author">— João Silva, Lisboa</div>
-    </div>
-    <div class="testimonial">
-      "Usei para verificar a minha moto. Dados exatos e peças com preços reais."
-      <div class="author">— Ana Costa, Porto</div>
-    </div>
-  </section>
-
-  <footer>
-    <p>© 2025 MatriculasPT — Todos os direitos reservados</p>
-    <div class="social">
-      <a href="#"><i class="fab fa-facebook"></i></a>
-      <a href="#"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-whatsapp"></i></a>
-    </div>
-  </footer>
+    <footer>
+      <p>© 2025 MatriculasPT — Todos os direitos reservados</p>
+      <div class="social">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </footer>
+  </div>
 
   <script>
     // Contador animado
@@ -254,8 +274,7 @@
 
       const veiculos = {
         'AA-00-AA': { marca: 'Renault', modelo: 'Clio V', ano: '2023', motor: '1.0 TCe 90cv', potencia: '90 CV', combustivel: 'Gasolina', transmissao: 'Manual 6v', cor: 'Branco Perolado', portas: '5', lugares: '5', classe: 'Ligeiro', co2: '118 g/km', consumo: '5.2 L/100km' },
-        'BB-11-BB': { marca: 'Honda', modelo: 'CB 500F', ano: '2024', motor: '471cc Bicilíndrico', potencia: '47 CV', combustivel: 'Gasolina', transmissao: 'Manual 6v', cor: 'Vermelho Grand Prix', portas: '—', lugares: '2', classe: 'Motociclo', co2: '—', consumo: '3.5 L/100km' },
-        'CC-22-CC': { marca: 'Fiat', modelo: '500 Hybrid', ano: '2025', motor: '1.0 Mild Hybrid', potencia: '70 CV', combustivel: 'Gasolina/Híbrido', transmissao: 'Manual 6v', cor: 'Verde Pasto', portas: '3', lugares: '4', classe: 'Ligeiro', co2: '89 g/km', consumo: '3.9 L/100km' }
+        'BB-11-BB': { marca: 'Honda', modelo: 'CB 500F', ano: '2024', motor: '471cc Bicilíndrico', potencia: '47 CV', combustivel: 'Gasolina', transmissao: 'Manual 6v', cor: 'Vermelho Grand Prix', portas: '—', lugares: '2', classe: 'Motociclo', co2: '—', consumo: '3.5 L/100km' }
       };
 
       const v = veiculos[m] || { marca: 'Volkswagen', modelo: 'Golf GTI', ano: '2025', motor: '2.0 TSI', potencia: '245 CV', combustivel: 'Gasolina', transmissao: 'Automática DSG 7v', cor: 'Azul Lapiz', portas: '5', lugares: '5', classe: 'Ligeiro', co2: '149 g/km', consumo: '6.5 L/100km' };
@@ -264,16 +283,14 @@
         'Filtro de Óleo Mann-Filter HU 7020 z (€14,90)', 'Pastilhas Dianteiras Bosch 0 986 494 611 (€52,90)', 'Disco de Travão Brembo 09.A201.11 (€89,90/par)',
         'Correia de Distribuição Gates 5655XS (€78,50)', 'Amortecedores Bilstein B6 (€134,90/conj.)', 'Bateria Varta Blue Dynamic E11 (€94,90)',
         'Escape Akrapovic Evolution (€1.289,90)', 'Pneus Michelin Pilot Sport 5 225/40 R18 (€124,90/un)', 'Óleo Motul 8100 X-Cess 5W40 5L (€42,90)',
-        'Filtro de Ar K&N 33-3005 (€58,90)', 'Velas NGK Laser Iridium SILZKBR8D8S (€38,90/conj.)', 'Jogo de Tapetes Personalizados WeatherTech (€129,90)',
-        'Kit de Embraiagem Sachs (€289,90)', 'Radiador Behr (€179,90)', 'Sensor de Estacionamento Valeo (€49,90/un)', 'Faróis LED Osram Night Breaker (€149,90/par)',
-        'Jantes OZ Racing Leggera HLT 18" (€689,90/conj.)', 'Suspensão Coilover KW Variant 3 (€1.899,90)', 'Freios Brembo GT (€3.499,90/conj.)', 'Turbo Upgrade Forge (€1.299,90)'
+        'Filtro de Ar K&N 33-3005 (€58,90)', 'Velas NGK Laser Iridium SILZKBR8D8S (€38,90/conj.)', 'Jogo de Tapetes Personalizados WeatherTech (€129,90)'
       ];
 
       result.innerHTML = `
         <h2>${m}</h2>
         <div class="result-grid">
           <div class="info-card">
-            <h3><i class="fas fa-car-side"></i> Especificações Técnicas</h3>
+            <h3>Especificações Técnicas</h3>
             <ul>
               <li><span>Marca:</span> <span>${v.marca}</span></li>
               <li><span>Modelo:</span> <span>${v.modelo}</span></li>
@@ -290,17 +307,14 @@
             </ul>
           </div>
           <div class="parts-card">
-            <h3><i class="fas fa-tools"></i> Peças Compatíveis (20+ Itens)</h3>
+            <h3>Peças Compatíveis</h3>
             <ul>
               ${pecas.map(p => `<li><span>${p.split(' €')[0]}</span> <span class="price">€${p.split(' €')[1]}</span></li>`).join('')}
             </ul>
-            <p style="margin-top:15px; font-size:0.9rem; color:#00d2ff;">
-              <i class="fas fa-shipping-fast"></i> Entrega 24/48h • <i class="fas fa-shield-alt"></i> Garantia 2 anos • <i class="fas fa-credit-card"></i> Pagamento seguro
-            </p>
           </div>
         </div>
         <a href="#" class="btn" onclick="result.style.display='none'; input.value=''; return false;">
-          <i class="fas fa-sync-alt"></i> Nova Consulta
+          Nova Consulta
         </a>
       `;
       result.style.display = 'block';
