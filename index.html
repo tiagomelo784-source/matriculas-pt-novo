@@ -3,98 +3,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MatriculasPT</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>MatriculasPT - Consulta Profissional</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #00d2ff;
+      --secondary: #ff6bcb;
+      --dark: #0f0c29;
+      --darker: #0a0820;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      background: var(--dark);
       color: white;
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
     }
-    .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-    .star { position: absolute; background: white; border-radius: 50%; animation: twinkle 3s infinite; }
-    @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-    .container { position: relative; z-index: 1; text-align: center; padding: 60px 20px; }
-    h1 { font-size: 3.5rem; background: linear-gradient(135deg, #00d2ff, #ff6bcb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 40px; }
-    .search { max-width: 500px; margin: 0 auto; position: relative; }
-    input { width: 100%; padding: 18px 60px 18px 20px; font-size: 1.2rem; border: none; border-radius: 50px; background: rgba(255,255,255,0.1); color: white; outline: none; }
-    button { position: absolute; right: 8px; top: 8px; background: linear-gradient(135deg, #00d2ff, #ff6bcb); border: none; width: 50px; height: 50px; border-radius: 50%; color: white; cursor: pointer; }
-    .result { margin-top: 40px; max-width: 800px; margin-left: auto; margin-right: auto; display: none; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .card { background: rgba(255,255,255,0.08); border-radius: 20px; padding: 30px; }
-    .card h3 { color: #00d2ff; margin-bottom: 15px; }
+
+    /* Fundo com estrelas + partículas */
+    .bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    }
+    .stars, .particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    .star { position: absolute; background: white; border-radius: 50%; animation: twinkle 4s infinite; }
+    @keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(1); } 50% { opacity: 1; transform: scale(1.5); } }
+    .particle { position: absolute; width: 3px; height: 3px; background: var(--primary); border-radius: 50%; animation: float 6s infinite; }
+    @keyframes float { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
+
+    /* Container */
+    .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; text-align: center; }
+
+    /* Título com brilho */
+    h1 {
+      font-size: 4rem; font-weight: 900; margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow { from { text-shadow: 0 0 20px rgba(0,210,255,0.5); } to { text-shadow: 0 0 40px rgba(255,107,203,0.8); } }
+
+    /* Campo de busca */
+    .search-box {
+      max-width: 600px; margin: 40px auto; position: relative;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    input {
+      width: 100%; padding: 20px 70px 20px 25px; font-size: 1.3rem;
+      border: 2px solid transparent; border-radius: 50px;
+      background: rgba(255,255,255,0.08); backdrop-filter: blur(15px);
+      color: white; outline: none; transition: 0.4s;
+    }
+    input:focus {
+      border-color: var(--primary); box-shadow: 0 0 30px rgba(0,210,255,0.4);
+    }
+    input::placeholder { color: rgba(255,255,255,0.6); }
+    button {
+      position: absolute; right: 8px; top: 8px; width: 56px; height: 56px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none; border-radius: 50%; color: white; font-size: 1.5rem;
+      cursor: pointer; transition: 0.3s; animation: pulse 2s infinite;
+    }
+    button:hover { transform: scale(1.1); }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0,210,255,0.7); } 70% { box-shadow: 0 0 0 15px rgba(0,210,255,0); } 100% { box-shadow: 0 0 0 0 rgba(0,210,255,0); } }
+
+    /* Resultados */
+    .result { margin-top: 60px; display: none; }
+    .result h2 {
+      font-size: 3rem; margin-bottom: 30px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px; }
+    .card {
+      background: rgba(255,255,255,0.05); border-radius: 20px; padding: 30px;
+      backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
+      transition: 0.4s; position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: 0.6s;
+    }
+    .card:hover::before { left: 100%; }
+    .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .card h3 { color: var(--primary); margin-bottom: 20px; font-size: 1.5rem; }
     ul { list-style: none; text-align: left; }
-    li { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .btn { background: linear-gradient(135deg, #00d2ff, #ff6bcb); color: white; padding: 15px 30px; text-decoration: none; border-radius: 12px; display: inline-block; margin-top: 20px; }
-    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    li { padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.95rem; }
+    li:last-child { border: none; }
+    .tag { display: inline-block; background: rgba(0,210,255,0.2); color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; margin-top: 8px; }
+
+    .btn {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white; padding: 16px 36px; text-decoration: none; border-radius: 50px;
+      font-weight: 700; display: inline-block; margin-top: 20px; transition: 0.3s;
+      animation: pulse 2s infinite;
+    }
+    .btn:hover { transform: scale(1.05); }
+
+    footer { margin-top: 80px; font-size: 0.9rem; color: rgba(255,255,255,0.5); }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2.8rem; }
+      .grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
-  <div class="stars" id="stars"></div>
+  <div class="bg">
+    <div class="stars" id="stars"></div>
+    <div class="particles" id="particles"></div>
+  </div>
+
   <div class="container">
-    <h1>MatriculasPT</h1>
-    <form id="form" class="search">
-      <input type="text" id="matricula" placeholder="Ex: AA-00-AA" required />
-      <button type="submit">Search</button>
-    </form>
+    <h1><i class="fas fa-car"></i> MatriculasPT</h1>
+    <p style="margin-bottom: 30px; font-size: 1.1rem;">Consulta gratuita e instantânea de veículos em Portugal</p>
+
+    <div class="search-box">
+      <input type="text" id="matricula" placeholder="Ex: AA-00-AA" maxlength="8" />
+      <button type="submit" id="searchBtn"><i class="fas fa-search"></i></button>
+    </div>
+
     <div id="result" class="result"></div>
+
+    <footer>© 2025 MatriculasPT - Dados demo para portfólio</footer>
   </div>
 
   <script>
     // Estrelas
     const stars = document.getElementById('stars');
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 200; i++) {
       const star = document.createElement('div');
       star.className = 'star';
       star.style.width = star.style.height = Math.random() * 3 + 'px';
       star.style.top = Math.random() * 100 + '%';
       star.style.left = Math.random() * 100 + '%';
-      star.style.animationDelay = Math.random() * 3 + 's';
+      star.style.animationDelay = Math.random() * 4 + 's';
       stars.appendChild(star);
     }
 
+    // Partículas flutuantes
+    const particles = document.getElementById('particles');
+    setInterval(() => {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (Math.random() * 3 + 3) + 's';
+      particles.appendChild(p);
+      setTimeout(() => p.remove(), 6000);
+    }, 300);
+
     // Consulta
-    document.getElementById('form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const m = document.getElementById('matricula').value.toUpperCase().trim();
-      if (m.length < 7) { alert('Matrícula inválida!'); return; }
+    document.getElementById('searchBtn').addEventListener('click', search);
+    document.getElementById('matricula').addEventListener('keypress', e => e.key === 'Enter' && search());
 
-      const data = {
-        'AA-00-AA': { marca: 'Renault', modelo: 'Clio', ano: '2021', motor: '1.0 TCe', potencia: '90 CV', cor: 'Branco' },
-        'BB-11-BB': { marca: 'Honda', modelo: 'CB 500F', ano: '2023', motor: '471cc', potencia: '47 CV', cor: 'Vermelho' }
-      }[m] || { marca: 'Fiat', modelo: '500', ano: '2020', motor: '1.2', potencia: '69 CV', cor: 'Verde' };
+    function search() {
+      const m = document.getElementById('matricula').value.toUpperCase().trim().replace(/\s/g, '');
+      if (!/^[A-Z]{2}-[0-9]{2}-[A-Z]{2}$/.test(m)) {
+        alert('Formato inválido! Use: AA-00-AA');
+        return;
+      }
 
-      const pecas = ['Filtro Óleo €15', 'Pastilhas €50', 'Correia €80'];
+      const veiculos = {
+        'AA-00-AA': {
+          marca: 'Renault', modelo: 'Clio V', ano: '2023', motor: '1.0 TCe 90cv', potencia: '90 CV', combustivel: 'Gasolina', transmissao: 'Manual 6v',
+          cor: 'Branco Glacier', portas: '5', lugares: '5', classe: 'Ligeiro', co2: '118 g/km', consumo: '5.2 L/100km',
+          pecas: [
+            'Filtro de Óleo Mann-Filter HU 7020 z (€14,90)', 'Pastilhas Dianteiras Bosch (€52,90)', 'Disco de Travão Brembo (€89,90/par)',
+            'Correia de Distribuição Gates (€78,50)', 'Amortecedores Monroe (€134,90/conj.)', 'Bateria Varta Blue 60Ah (€94,90)',
+            'Escapamento Ragazzon Sport (€379,90)', 'Pneus Michelin Pilot Sport 4 195/55 R16 (€89,90/un)', 'Óleo Motul 5W30 5L (€42,90)',
+            'Filtro de Ar K&N (€58,90)', 'Velas NGK Laser Iridium (€38,90/conj.)', 'Jogo de Tapetes Personalizados (€49,90)'
+          ]
+        },
+        'BB-11-BB': {
+          marca: 'Honda', modelo: 'CB 500F', ano: '2024', motor: '471cc Bicilíndrico', potencia: '47 CV', combustivel: 'Gasolina', transmissao: 'Manual 6v',
+          cor: 'Vermelho Grand Prix', portas: '—', lugares: '2', classe: 'Motociclo', co2: '—', consumo: '3.5 L/100km',
+          pecas: [
+            'Óleo Motul 10W40 4L (€38,90)', 'Filtro de Óleo Hiflofiltro (€8,90)', 'Corrente DID 520VX3 120L (€84,90)',
+            'Pneu Dianteiro Michelin Road 6 120/70-17 (€124,90)', 'Pneu Traseiro Michelin Road 6 160/60-17 (€164,90)',
+            'Pastilhas EBC FA229HH (€42,90/par)', 'Disco Dianteiro EBC (€139,90)', 'Bateria Yuasa YTX9-BS (€68,90)',
+            'Escape Akrapovic Carbono (€789,90)', 'Manetes Ajustáveis (€59,90)', 'Proteção de Motor Puig (€129,90)'
+          ]
+        }
+      };
 
-      document.getElementById('result').innerHTML = `
-        <h2 style="background: linear-gradient(135deg, #00d2ff, #ff6bcb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${m}</h2>
-        <div class="grid">
-          <div class="card">
-            <h3>Especificações</h3>
-            <ul>
-              <li><strong>Marca:</strong> ${data.marca}</li>
-              <li><strong>Modelo:</strong> ${data.modelo}</li>
-              <li><strong>Ano:</strong> ${data.ano}</li>
-              <li><strong>Motor:</strong> ${data.motor}</li>
-              <li><strong>Potência:</strong> ${data.potencia}</li>
-              <li><strong>Cor:</strong> ${data.cor}</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Peças</h3>
-            <ul>
-              ${pecas.map(p => `<li>Tool ${p}</li>`).join('')}
-            </ul>
-          </div>
-        </div>
-        <a href="#" class="btn" onclick="document.getElementById('form').reset(); document.getElementById('result').style.display='none'; return false;">Nova Consulta</a>
-      `;
-      document.getElementById('result').style.display = 'block';
-    });
-  </script>
-</body>
-</html>
+      const v = veiculos[m] || {
+        marca: 'Peugeot', modelo: '208 GT Line', ano: '2022', motor: '1.2 PureTech 130cv', potencia: '130 CV', combustivel: 'Gasolina',
+        cor: 'Azul Vertigo', portas: '5', lugares: '5', classe: 'Lige
