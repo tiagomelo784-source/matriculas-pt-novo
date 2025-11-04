@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MatriculasPT - Consulta Instantânea de Veículos</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+  <title>MatriculasPT - Consulta Premium de Veículos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
@@ -21,16 +21,16 @@
       overflow-x: hidden;
     }
 
-    /* Vídeo de fundo */
+    /* Vídeo de fundo - Porsche vermelho a acelerar */
     #bg-video {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2;
-      filter: brightness(0.4);
+      filter: brightness(0.3) contrast(1.2);
     }
 
     /* Overlay gradiente */
     .overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-      background: linear-gradient(135deg, rgba(0,210,255,0.1), rgba(255,107,203,0.1));
+      background: linear-gradient(135deg, rgba(0,210,255,0.2), rgba(255,107,203,0.2));
     }
 
     /* Header */
@@ -39,18 +39,17 @@
       position: relative;
     }
     .logo {
-      font-family: 'Orbitron', sans-serif; font-size: 4.5rem; font-weight: 900;
+      font-size: 4.5rem; font-weight: 900;
       background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 30px rgba(0,210,255,0.5);
       animation: neon 2s ease-in-out infinite alternate;
     }
-    @keyframes neon { from { filter: drop-shadow(0 0 10px var(--primary)); } to { filter: drop-shadow(0 0 40px var(--secondary)); } }
+    @keyframes neon { from { text-shadow: 0 0 20px var(--primary); } to { text-shadow: 0 0 40px var(--secondary); } }
     .tagline {
-      font-size: 1.4rem; margin: 20px 0; color: #ccc;
+      font-size: 1.4rem; margin: 20px 0; color: #ddd;
     }
 
-    /* Contador */
+    /* Contador animado */
     .counter {
       display: flex; justify-content: center; gap: 40px; margin: 40px 0; flex-wrap: wrap;
     }
@@ -63,11 +62,12 @@
     /* Campo de busca */
     .search-container {
       max-width: 600px; margin: 0 auto; position: relative;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
     #matricula {
       width: 100%; padding: 22px 80px 22px 30px; font-size: 1.4rem;
       border: 3px solid transparent; border-radius: 50px;
-      background: rgba(255,255,255,0.1); backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.08); backdrop-filter: blur(20px);
       color: white; outline: none; transition: 0.4s;
     }
     #matricula:focus {
@@ -143,7 +143,8 @@
       text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.5);
       font-size: 0.9rem; color: #aaa;
     }
-    .social a { color: var(--primary); margin: 0 10px; font-size: 1.5rem; }
+    .social a { color: var(--primary); margin: 0 10px; font-size: 1.5rem; transition: 0.3s; }
+    .social a:hover { transform: scale(1.2); }
 
     @media (max-width: 768px) {
       .logo { font-size: 3rem; }
@@ -153,7 +154,7 @@
 </head>
 <body>
 
-  <!-- Vídeo de fundo -->
+  <!-- Vídeo de fundo - Porsche vermelho a acelerar -->
   <video id="bg-video" autoplay muted loop playsinline>
     <source src="https://assets.mixkit.co/videos/preview/mixkit-red-sports-car-driving-on-road-at-sunset-32615-large.mp4" type="video/mp4">
   </video>
@@ -242,57 +243,64 @@
       }, 20);
     });
 
-    // Pesquisa (funciona com botão E Enter)
+    // Pesquisa
     const input = document.getElementById('matricula');
     const btn = document.getElementById('searchBtn');
     const result = document.getElementById('result');
 
     const search = () => {
-      let m = input.value.toUpperCase().trim().replace(/\s/g, '');
-      if (!/^[A-Z]{2}-\d{2}-[A-Z]{2}$/.test(m)) {
-        alert('Formato inválido! Use: AA-00-AA');
-        return;
-      }
+      let m = input.value.toUpperCase().trim();
+      if (!m) return;
 
       const veiculos = {
-        'AA-00-AA': { marca: 'Renault', modelo: 'Clio V', ano: '2023', motor: '1.0 TCe', potencia: '90 CV', cor: 'Branco', combustivel: 'Gasolina', co2: '118 g/km', consumo: '5.2 L/100km' },
-        'BB-11-BB': { marca: 'Honda', modelo: 'CB 500F', ano: '2024', motor: '471cc', potencia: '47 CV', cor: 'Vermelho', combustivel: 'Gasolina', co2: '—', consumo: '3.5 L/100km' }
+        'AA-00-AA': { marca: 'Renault', modelo: 'Clio V', ano: '2023', motor: '1.0 TCe 90cv', potencia: '90 CV', combustivel: 'Gasolina', transmissao: 'Manual 6v', cor: 'Branco Perolado', portas: '5', lugares: '5', classe: 'Ligeiro', co2: '118 g/km', consumo: '5.2 L/100km' },
+        'BB-11-BB': { marca: 'Honda', modelo: 'CB 500F', ano: '2024', motor: '471cc Bicilíndrico', potencia: '47 CV', combustivel: 'Gasolina', transmissao: 'Manual 6v', cor: 'Vermelho Grand Prix', portas: '—', lugares: '2', classe: 'Motociclo', co2: '—', consumo: '3.5 L/100km' },
+        'CC-22-CC': { marca: 'Fiat', modelo: '500 Hybrid', ano: '2025', motor: '1.0 Mild Hybrid', potencia: '70 CV', combustivel: 'Gasolina/Híbrido', transmissao: 'Manual 6v', cor: 'Verde Pasto', portas: '3', lugares: '4', classe: 'Ligeiro', co2: '89 g/km', consumo: '3.9 L/100km' }
       };
 
-      const v = veiculos[m] || { marca: 'Fiat', modelo: '500', ano: '2020', motor: '1.2 Fire', potencia: '69 CV', cor: 'Verde', combustivel: 'Gasolina', co2: '120 g/km', consumo: '5.5 L/100km' };
+      const v = veiculos[m] || { marca: 'Volkswagen', modelo: 'Golf GTI', ano: '2025', motor: '2.0 TSI', potencia: '245 CV', combustivel: 'Gasolina', transmissao: 'Automática DSG 7v', cor: 'Azul Lapiz', portas: '5', lugares: '5', classe: 'Ligeiro', co2: '149 g/km', consumo: '6.5 L/100km' };
 
       const pecas = [
-        'Filtro Óleo Mann €14,90', 'Pastilhas Bosch €52,90', 'Correia Gates €78,50',
-        'Bateria Varta €94,90', 'Pneus Michelin €89,90/un', 'Óleo Motul 5L €42,90',
-        'Filtro Ar K&N €58,90', 'Velas NGK €38,90', 'Escape Remus €459,90'
+        'Filtro de Óleo Mann-Filter HU 7020 z (€14,90)', 'Pastilhas Dianteiras Bosch 0 986 494 611 (€52,90)', 'Disco de Travão Brembo 09.A201.11 (€89,90/par)',
+        'Correia de Distribuição Gates 5655XS (€78,50)', 'Amortecedores Bilstein B6 (€134,90/conj.)', 'Bateria Varta Blue Dynamic E11 (€94,90)',
+        'Escape Akrapovic Evolution (€1.289,90)', 'Pneus Michelin Pilot Sport 5 225/40 R18 (€124,90/un)', 'Óleo Motul 8100 X-Cess 5W40 5L (€42,90)',
+        'Filtro de Ar K&N 33-3005 (€58,90)', 'Velas NGK Laser Iridium SILZKBR8D8S (€38,90/conj.)', 'Jogo de Tapetes Personalizados WeatherTech (€129,90)',
+        'Kit de Embraiagem Sachs (€289,90)', 'Radiador Behr (€179,90)', 'Sensor de Estacionamento Valeo (€49,90/un)', 'Faróis LED Osram Night Breaker (€149,90/par)',
+        'Jantes OZ Racing Leggera HLT 18" (€689,90/conj.)', 'Suspensão Coilover KW Variant 3 (€1.899,90)', 'Freios Brembo GT (€3.499,90/conj.)', 'Turbo Upgrade Forge (€1.299,90)'
       ];
 
       result.innerHTML = `
         <h2>${m}</h2>
         <div class="result-grid">
           <div class="info-card">
-            <h3><i class="fas fa-info-circle"></i> Dados do Veículo</h3>
+            <h3><i class="fas fa-car-side"></i> Especificações Técnicas</h3>
             <ul>
               <li><span>Marca:</span> <span>${v.marca}</span></li>
               <li><span>Modelo:</span> <span>${v.modelo}</span></li>
               <li><span>Ano:</span> <span>${v.ano}</span></li>
               <li><span>Motor:</span> <span>${v.motor}</span></li>
               <li><span>Potência:</span> <span>${v.potencia}</span></li>
-              <li><span>Cor:</span> <span>${v.cor}</span></li>
               <li><span>Combustível:</span> <span>${v.combustivel}</span></li>
+              <li><span>Transmissão:</span> <span>${v.transmissao}</span></li>
+              <li><span>Cor:</span> <span>${v.cor}</span></li>
+              <li><span>Portas/Lugares:</span> <span>${v.portas}/${v.lugares}</span></li>
+              <li><span>Classe:</span> <span>${v.classe}</span></li>
               <li><span>CO₂:</span> <span>${v.co2}</span></li>
               <li><span>Consumo:</span> <span>${v.consumo}</span></li>
             </ul>
           </div>
           <div class="parts-card">
-            <h3><i class="fas fa-tools"></i> Peças Compatíveis</h3>
+            <h3><i class="fas fa-tools"></i> Peças Compatíveis (20+ Itens)</h3>
             <ul>
               ${pecas.map(p => `<li><span>${p.split(' €')[0]}</span> <span class="price">€${p.split(' €')[1]}</span></li>`).join('')}
             </ul>
+            <p style="margin-top:15px; font-size:0.9rem; color:#00d2ff;">
+              <i class="fas fa-shipping-fast"></i> Entrega 24/48h • <i class="fas fa-shield-alt"></i> Garantia 2 anos • <i class="fas fa-credit-card"></i> Pagamento seguro
+            </p>
           </div>
         </div>
         <a href="#" class="btn" onclick="result.style.display='none'; input.value=''; return false;">
-          Nova Consulta
+          <i class="fas fa-sync-alt"></i> Nova Consulta
         </a>
       `;
       result.style.display = 'block';
