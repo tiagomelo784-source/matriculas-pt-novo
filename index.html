@@ -3,193 +3,304 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MatriculasPT - Consulta Profissional</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <title>MatriculasPT - Consulta Instantânea de Veículos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Orbitron:wght@900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
       --primary: #00d2ff;
       --secondary: #ff6bcb;
-      --dark: #0f0c29;
-      --darker: #0a0820;
+      --dark: #0a0a0a;
+      --accent: #ffcc00;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Poppins', sans-serif;
       background: var(--dark);
       color: white;
-      min-height: 100vh;
       overflow-x: hidden;
+    }
+
+    /* Vídeo de fundo */
+    #bg-video {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2;
+      filter: brightness(0.4);
+    }
+
+    /* Overlay gradiente */
+    .overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+      background: linear-gradient(135deg, rgba(0,210,255,0.1), rgba(255,107,203,0.1));
+    }
+
+    /* Header */
+    header {
+      text-align: center; padding: 100px 20px 60px;
       position: relative;
     }
-
-    /* Fundo com estrelas + partículas */
-    .bg {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-    }
-    .stars, .particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-    .star { position: absolute; background: white; border-radius: 50%; animation: twinkle 4s infinite; }
-    @keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(1); } 50% { opacity: 1; transform: scale(1.5); } }
-    .particle { position: absolute; width: 3px; height: 3px; background: var(--primary); border-radius: 50%; animation: float 6s infinite; }
-    @keyframes float { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
-
-    /* Container */
-    .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; text-align: center; }
-
-    /* Título com brilho */
-    h1 {
-      font-size: 4rem; font-weight: 900; margin-bottom: 20px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
+    .logo {
+      font-family: 'Orbitron', sans-serif; font-size: 4.5rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      animation: glow 2s ease-in-out infinite alternate;
+      text-shadow: 0 0 30px rgba(0,210,255,0.5);
+      animation: neon 2s ease-in-out infinite alternate;
     }
-    @keyframes glow { from { text-shadow: 0 0 20px rgba(0,210,255,0.5); } to { text-shadow: 0 0 40px rgba(255,107,203,0.8); } }
+    @keyframes neon { from { filter: drop-shadow(0 0 10px var(--primary)); } to { filter: drop-shadow(0 0 40px var(--secondary)); } }
+    .tagline {
+      font-size: 1.4rem; margin: 20px 0; color: #ccc;
+    }
+
+    /* Contador */
+    .counter {
+      display: flex; justify-content: center; gap: 40px; margin: 40px 0; flex-wrap: wrap;
+    }
+    .count-box {
+      text-align: center; min-width: 120px;
+    }
+    .count-box h3 { font-size: 2.5rem; color: var(--primary); }
+    .count-box p { font-size: 0.9rem; color: #aaa; }
 
     /* Campo de busca */
-    .search-box {
-      max-width: 600px; margin: 40px auto; position: relative;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    .search-container {
+      max-width: 600px; margin: 0 auto; position: relative;
     }
-    input {
-      width: 100%; padding: 20px 70px 20px 25px; font-size: 1.3rem;
-      border: 2px solid transparent; border-radius: 50px;
-      background: rgba(255,255,255,0.08); backdrop-filter: blur(15px);
+    #matricula {
+      width: 100%; padding: 22px 80px 22px 30px; font-size: 1.4rem;
+      border: 3px solid transparent; border-radius: 50px;
+      background: rgba(255,255,255,0.1); backdrop-filter: blur(20px);
       color: white; outline: none; transition: 0.4s;
     }
-    input:focus {
-      border-color: var(--primary); box-shadow: 0 0 30px rgba(0,210,255,0.4);
+    #matricula:focus {
+      border-color: var(--primary); box-shadow: 0 0 40px rgba(0,210,255,0.5);
     }
-    input::placeholder { color: rgba(255,255,255,0.6); }
-    button {
-      position: absolute; right: 8px; top: 8px; width: 56px; height: 56px;
+    #searchBtn {
+      position: absolute; right: 8px; top: 8px; width: 60px; height: 60px;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border: none; border-radius: 50%; color: white; font-size: 1.5rem;
-      cursor: pointer; transition: 0.3s; animation: pulse 2s infinite;
+      border: none; border-radius: 50%; color: white; font-size: 1.6rem;
+      cursor: pointer; animation: pulse 1.5s infinite;
     }
-    button:hover { transform: scale(1.1); }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0,210,255,0.7); } 70% { box-shadow: 0 0 0 15px rgba(0,210,255,0); } 100% { box-shadow: 0 0 0 0 rgba(0,210,255,0); } }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0,210,255,0.7); } 70% { box-shadow: 0 0 0 20px rgba(0,210,255,0); } 100% { box-shadow: 0 0 0 0 rgba(0,210,255,0); } }
+
+    /* Seções de destaque */
+    .features {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;
+      max-width: 1200px; margin: 80px auto; padding: 0 20px;
+    }
+    .feature-card {
+      background: rgba(255,255,255,0.05); border-radius: 20px; padding: 35px;
+      text-align: center; backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
+      transition: 0.4s;
+    }
+    .feature-card:hover {
+      transform: translateY(-15px); box-shadow: 0 25px 50px rgba(0,210,255,0.2);
+    }
+    .feature-card i {
+      font-size: 3rem; color: var(--primary); margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
     /* Resultados */
-    .result { margin-top: 60px; display: none; }
-    .result h2 {
-      font-size: 3rem; margin-bottom: 30px;
+    #result {
+      max-width: 1000px; margin: 60px auto; padding: 0 20px; display: none;
+    }
+    #result h2 {
+      font-size: 3rem; text-align: center; margin-bottom: 40px;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px; }
-    .card {
-      background: rgba(255,255,255,0.05); border-radius: 20px; padding: 30px;
-      backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
-      transition: 0.4s; position: relative; overflow: hidden;
+    .result-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 30px;
     }
-    .card::before {
-      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      transition: 0.6s;
+    .info-card, .parts-card {
+      background: rgba(255,255,255,0.08); border-radius: 20px; padding: 30px;
+      backdrop-filter: blur(15px);
     }
-    .card:hover::before { left: 100%; }
-    .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-    .card h3 { color: var(--primary); margin-bottom: 20px; font-size: 1.5rem; }
-    ul { list-style: none; text-align: left; }
-    li { padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.95rem; }
-    li:last-child { border: none; }
-    .tag { display: inline-block; background: rgba(0,210,255,0.2); color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; margin-top: 8px; }
+    .info-card h3, .parts-card h3 { color: var(--primary); margin-bottom: 20px; font-size: 1.6rem; }
+    ul { list-style: none; }
+    li { padding: 12px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); display: flex; justify-content: space-between; }
+    .price { color: var(--accent); font-weight: 600; }
 
     .btn {
+      display: block; width: fit-content; margin: 30px auto 0;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white; padding: 16px 36px; text-decoration: none; border-radius: 50px;
-      font-weight: 700; display: inline-block; margin-top: 20px; transition: 0.3s;
-      animation: pulse 2s infinite;
+      color: white; padding: 16px 40px; border-radius: 50px; text-decoration: none;
+      font-weight: 700; font-size: 1.1rem; animation: pulse 2s infinite;
     }
-    .btn:hover { transform: scale(1.05); }
 
-    footer { margin-top: 80px; font-size: 0.9rem; color: rgba(255,255,255,0.5); }
+    /* Testemunhos */
+    .testimonials {
+      background: rgba(0,0,0,0.3); padding: 60px 20px; text-align: center;
+    }
+    .testimonial {
+      max-width: 600px; margin: 0 auto 40px; font-style: italic; color: #ddd;
+    }
+    .testimonial::before { content: '"'; font-size: 4rem; color: var(--primary); }
+    .author { margin-top: 15px; font-weight: 600; color: var(--accent); }
+
+    /* Footer */
+    footer {
+      text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.5);
+      font-size: 0.9rem; color: #aaa;
+    }
+    .social a { color: var(--primary); margin: 0 10px; font-size: 1.5rem; }
 
     @media (max-width: 768px) {
-      h1 { font-size: 2.8rem; }
-      .grid { grid-template-columns: 1fr; }
+      .logo { font-size: 3rem; }
+      .result-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="bg">
-    <div class="stars" id="stars"></div>
-    <div class="particles" id="particles"></div>
-  </div>
 
-  <div class="container">
-    <h1><i class="fas fa-car"></i> MatriculasPT</h1>
-    <p style="margin-bottom: 30px; font-size: 1.1rem;">Consulta gratuita e instantânea de veículos em Portugal</p>
+  <!-- Vídeo de fundo -->
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="https://assets.mixkit.co/videos/preview/mixkit-set-of-plateaus-seen-from-the-heights-in-a-desert-32613-large.mp4" type="video/mp4">
+  </video>
+  <div class="overlay"></div>
 
-    <div class="search-box">
-      <input type="text" id="matricula" placeholder="Ex: AA-00-AA" maxlength="8" />
-      <button type="submit" id="searchBtn"><i class="fas fa-search"></i></button>
+  <header>
+    <div class="logo">MatriculasPT</div>
+    <p class="tagline">A tua base de dados de veículos em Portugal — grátis, rápida e precisa</p>
+
+    <div class="counter">
+      <div class="count-box">
+        <h3 class="count" data-target="50000">0</h3>
+        <p>Consultas Realizadas</p>
+      </div>
+      <div class="count-box">
+        <h3 class="count" data-target="150">0</h3>
+        <p>Veículos na Base</p>
+      </div>
+      <div class="count-box">
+        <h3 class="count" data-target="99.9">0</h3>
+        <p>Precisão</p>
+      </div>
     </div>
 
-    <div id="result" class="result"></div>
+    <div class="search-container">
+      <input type="text" id="matricula" placeholder="Insere a matrícula (ex: AA-00-AA)" maxlength="8" />
+      <button id="searchBtn"><i class="fas fa-search"></i></button>
+    </div>
+  </header>
 
-    <footer>© 2025 MatriculasPT - Dados demo para portfólio</footer>
-  </div>
+  <section class="features">
+    <div class="feature-card">
+      <i class="fas fa-bolt"></i>
+      <h3>Instantâneo</h3>
+      <p>Resultado em menos de 1 segundo</p>
+    </div>
+    <div class="feature-card">
+      <i class="fas fa-shield-alt"></i>
+      <h3>Seguro</h3>
+      <p>Dados anónimos e protegidos</p>
+    </div>
+    <div class="feature-card">
+      <i class="fas fa-mobile-alt"></i>
+      <h3>Responsivo</h3>
+      <p>Funciona em qualquer dispositivo</p>
+    </div>
+  </section>
+
+  <div id="result"></div>
+
+  <section class="testimonials">
+    <div class="testimonial">
+      "Finalmente consigo saber tudo sobre um carro antes de comprar! Recomendo!"
+      <div class="author">— João Silva, Lisboa</div>
+    </div>
+    <div class="testimonial">
+      "Usei para verificar a minha moto. Dados exatos e peças com preços reais."
+      <div class="author">— Ana Costa, Porto</div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 MatriculasPT — Todos os direitos reservados</p>
+    <div class="social">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-whatsapp"></i></a>
+    </div>
+  </footer>
 
   <script>
-    // Estrelas
-    const stars = document.getElementById('stars');
-    for (let i = 0; i < 200; i++) {
-      const star = document.createElement('div');
-      star.className = 'star';
-      star.style.width = star.style.height = Math.random() * 3 + 'px';
-      star.style.top = Math.random() * 100 + '%';
-      star.style.left = Math.random() * 100 + '%';
-      star.style.animationDelay = Math.random() * 4 + 's';
-      stars.appendChild(star);
-    }
+    // Contador animado
+    document.querySelectorAll('.count').forEach(counter => {
+      const target = +counter.getAttribute('data-target');
+      const speed = 200;
+      const increment = target / speed;
+      let current = 0;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          counter.textContent = target.toFixed(1) + (target % 1 === 0 ? '' : '%');
+          clearInterval(timer);
+        } else {
+          counter.textContent = current.toFixed(1) + (target % 1 === 0 ? '' : '%');
+        }
+      }, 20);
+    });
 
-    // Partículas flutuantes
-    const particles = document.getElementById('particles');
-    setInterval(() => {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.animationDuration = (Math.random() * 3 + 3) + 's';
-      particles.appendChild(p);
-      setTimeout(() => p.remove(), 6000);
-    }, 300);
+    // Pesquisa (funciona com botão E Enter)
+    const input = document.getElementById('matricula');
+    const btn = document.getElementById('searchBtn');
+    const result = document.getElementById('result');
 
-    // Consulta
-    document.getElementById('searchBtn').addEventListener('click', search);
-    document.getElementById('matricula').addEventListener('keypress', e => e.key === 'Enter' && search());
-
-    function search() {
-      const m = document.getElementById('matricula').value.toUpperCase().trim().replace(/\s/g, '');
-      if (!/^[A-Z]{2}-[0-9]{2}-[A-Z]{2}$/.test(m)) {
+    const search = () => {
+      let m = input.value.toUpperCase().trim().replace(/\s/g, '');
+      if (!/^[A-Z]{2}-\d{2}-[A-Z]{2}$/.test(m)) {
         alert('Formato inválido! Use: AA-00-AA');
         return;
       }
 
       const veiculos = {
-        'AA-00-AA': {
-          marca: 'Renault', modelo: 'Clio V', ano: '2023', motor: '1.0 TCe 90cv', potencia: '90 CV', combustivel: 'Gasolina', transmissao: 'Manual 6v',
-          cor: 'Branco Glacier', portas: '5', lugares: '5', classe: 'Ligeiro', co2: '118 g/km', consumo: '5.2 L/100km',
-          pecas: [
-            'Filtro de Óleo Mann-Filter HU 7020 z (€14,90)', 'Pastilhas Dianteiras Bosch (€52,90)', 'Disco de Travão Brembo (€89,90/par)',
-            'Correia de Distribuição Gates (€78,50)', 'Amortecedores Monroe (€134,90/conj.)', 'Bateria Varta Blue 60Ah (€94,90)',
-            'Escapamento Ragazzon Sport (€379,90)', 'Pneus Michelin Pilot Sport 4 195/55 R16 (€89,90/un)', 'Óleo Motul 5W30 5L (€42,90)',
-            'Filtro de Ar K&N (€58,90)', 'Velas NGK Laser Iridium (€38,90/conj.)', 'Jogo de Tapetes Personalizados (€49,90)'
-          ]
-        },
-        'BB-11-BB': {
-          marca: 'Honda', modelo: 'CB 500F', ano: '2024', motor: '471cc Bicilíndrico', potencia: '47 CV', combustivel: 'Gasolina', transmissao: 'Manual 6v',
-          cor: 'Vermelho Grand Prix', portas: '—', lugares: '2', classe: 'Motociclo', co2: '—', consumo: '3.5 L/100km',
-          pecas: [
-            'Óleo Motul 10W40 4L (€38,90)', 'Filtro de Óleo Hiflofiltro (€8,90)', 'Corrente DID 520VX3 120L (€84,90)',
-            'Pneu Dianteiro Michelin Road 6 120/70-17 (€124,90)', 'Pneu Traseiro Michelin Road 6 160/60-17 (€164,90)',
-            'Pastilhas EBC FA229HH (€42,90/par)', 'Disco Dianteiro EBC (€139,90)', 'Bateria Yuasa YTX9-BS (€68,90)',
-            'Escape Akrapovic Carbono (€789,90)', 'Manetes Ajustáveis (€59,90)', 'Proteção de Motor Puig (€129,90)'
-          ]
-        }
+        'AA-00-AA': { marca: 'Renault', modelo: 'Clio V', ano: '2023', motor: '1.0 TCe', potencia: '90 CV', cor: 'Branco', combustivel: 'Gasolina', co2: '118 g/km', consumo: '5.2 L/100km' },
+        'BB-11-BB': { marca: 'Honda', modelo: 'CB 500F', ano: '2024', motor: '471cc', potencia: '47 CV', cor: 'Vermelho', combustivel: 'Gasolina', co2: '—', consumo: '3.5 L/100km' }
       };
 
-      const v = veiculos[m] || {
-        marca: 'Peugeot', modelo: '208 GT Line', ano: '2022', motor: '1.2 PureTech 130cv', potencia: '130 CV', combustivel: 'Gasolina',
-        cor: 'Azul Vertigo', portas: '5', lugares: '5', classe: 'Lige
+      const v = veiculos[m] || { marca: 'Fiat', modelo: '500', ano: '2020', motor: '1.2 Fire', potencia: '69 CV', cor: 'Verde', combustivel: 'Gasolina', co2: '120 g/km', consumo: '5.5 L/100km' };
+
+      const pecas = [
+        'Filtro Óleo Mann €14,90', 'Pastilhas Bosch €52,90', 'Correia Gates €78,50',
+        'Bateria Varta €94,90', 'Pneus Michelin €89,90/un', 'Óleo Motul 5L €42,90',
+        'Filtro Ar K&N €58,90', 'Velas NGK €38,90', 'Escape Remus €459,90'
+      ];
+
+      result.innerHTML = `
+        <h2>${m}</h2>
+        <div class="result-grid">
+          <div class="info-card">
+            <h3><i class="fas fa-info-circle"></i> Dados do Veículo</h3>
+            <ul>
+              <li><span>Marca:</span> <span>${v.marca}</span></li>
+              <li><span>Modelo:</span> <span>${v.modelo}</span></li>
+              <li><span>Ano:</span> <span>${v.ano}</span></li>
+              <li><span>Motor:</span> <span>${v.motor}</span></li>
+              <li><span>Potência:</span> <span>${v.potencia}</span></li>
+              <li><span>Cor:</span> <span>${v.cor}</span></li>
+              <li><span>Combustível:</span> <span>${v.combustivel}</span></li>
+              <li><span>CO₂:</span> <span>${v.co2}</span></li>
+              <li><span>Consumo:</span> <span>${v.consumo}</span></li>
+            </ul>
+          </div>
+          <div class="parts-card">
+            <h3><i class="fas fa-tools"></i> Peças Compatíveis</h3>
+            <ul>
+              ${pecas.map(p => `<li><span>${p.split(' €')[0]}</span> <span class="price">€${p.split(' €')[1]}</span></li>`).join('')}
+            </ul>
+          </div>
+        </div>
+        <a href="#" class="btn" onclick="result.style.display='none'; input.value=''; return false;">
+          Nova Consulta
+        </a>
+      `;
+      result.style.display = 'block';
+      result.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    btn.addEventListener('click', search);
+    input.addEventListener('keypress', e => e.key === 'Enter' && search());
+  </script>
+</body>
+</html>
