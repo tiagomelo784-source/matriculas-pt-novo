@@ -21,8 +21,7 @@
       overflow-x: hidden;
       position: relative;
     }
-
-    /* Vídeo de fundo - Porsche vermelho a acelerar */
+    /* Vídeo de fundo - BMW M4 Competition a fazer drift */
     #bg-video {
       position: fixed;
       top: 0; left: 0;
@@ -31,7 +30,6 @@
       z-index: -3; /* Atrás do overlay */
       filter: brightness(0.35) contrast(1.3);
     }
-
     /* Overlay gradiente (em cima do vídeo) */
     .overlay {
       position: fixed;
@@ -41,13 +39,11 @@
       background: linear-gradient(135deg, rgba(10,10,10,0.6), rgba(0,210,255,0.1));
       pointer-events: none;
     }
-
     /* Conteúdo principal (em cima de tudo) */
     .content {
       position: relative;
       z-index: 1;
     }
-
     /* Header */
     header {
       text-align: center; padding: 100px 20px 60px;
@@ -62,7 +58,6 @@
     .tagline {
       font-size: 1.4rem; margin: 20px 0; color: #eee;
     }
-
     /* Contador animado */
     .counter {
       display: flex; justify-content: center; gap: 40px; margin: 40px 0; flex-wrap: wrap;
@@ -72,7 +67,6 @@
     }
     .count-box h3 { font-size: 2.5rem; color: var(--primary); }
     .count-box p { font-size: 0.9rem; color: #aaa; }
-
     /* Campo de busca */
     .search-container {
       max-width: 600px; margin: 0 auto; position: relative;
@@ -94,7 +88,6 @@
       cursor: pointer; animation: pulse 1.5s infinite;
     }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0,210,255,0.7); } 70% { box-shadow: 0 0 0 20px rgba(0,210,255,0); } 100% { box-shadow: 0 0 0 0 rgba(0,210,255,0); } }
-
     /* Seções de destaque */
     .features {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;
@@ -113,7 +106,6 @@
       animation: float 3s ease-in-out infinite;
     }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
     /* Resultados */
     #result {
       max-width: 1000px; margin: 60px auto; padding: 0 20px; display: none;
@@ -134,14 +126,12 @@
     ul { list-style: none; }
     li { padding: 12px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); display: flex; justify-content: space-between; }
     .price { color: var(--accent); font-weight: 600; }
-
     .btn {
       display: block; width: fit-content; margin: 30px auto 0;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white; padding: 16px 40px; border-radius: 50px; text-decoration: none;
       font-weight: 700; font-size: 1.1rem; animation: pulse 2s infinite;
     }
-
     /* Testemunhos */
     .testimonials {
       background: rgba(0,0,0,0.3); padding: 60px 20px; text-align: center;
@@ -151,7 +141,6 @@
     }
     .testimonial::before { content: '"'; font-size: 4rem; color: var(--primary); }
     .author { margin-top: 15px; font-weight: 600; color: var(--accent); }
-
     /* Footer */
     footer {
       text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.5);
@@ -159,7 +148,6 @@
     }
     .social a { color: var(--primary); margin: 0 10px; font-size: 1.5rem; transition: 0.3s; }
     .social a:hover { transform: scale(1.2); }
-
     @media (max-width: 768px) {
       .logo { font-size: 3rem; }
       .result-grid { grid-template-columns: 1fr; }
@@ -167,11 +155,10 @@
   </style>
 </head>
 <body>
-
-  <!-- Vídeo de fundo - Porsche vermelho a acelerar -->
+  <!-- VÍDEO DE FUNDO: BMW M4 Competition a fazer drift -->
   <video id="bg-video" autoplay muted loop playsinline preload="auto">
-  <source src="https://videos.pexels.com/video-files/8549545/8549545-hd_1920_1080_30fps.mp4" type="video/mp4">
-    Your browser does not support the video tag.
+    <source src="https://videos.pexels.com/video-files/854194/854194-hd_1920_1080_30fps.mp4" type="video/mp4">
+    O teu browser não suporta vídeo.
   </video>
 
   <!-- Overlay em cima do vídeo -->
@@ -182,7 +169,6 @@
     <header>
       <div class="logo">MatriculasPT</div>
       <p class="tagline">A tua base de dados de veículos em Portugal — grátis, rápida e precisa</p>
-
       <div class="counter">
         <div class="count-box">
           <h3 class="count" data-target="50000">0</h3>
@@ -197,10 +183,9 @@
           <p>Precisão</p>
         </div>
       </div>
-
       <div class="search-container">
         <input type="text" id="matricula" placeholder="Insere a matrícula (ex: AA-00-AA)" maxlength="8" />
-        <button id="searchBtn">Search</button>
+        <button id="searchBtn"><i class="fas fa-search"></i></button>
       </div>
     </header>
 
@@ -276,7 +261,6 @@
         'AA-00-AA': { marca: 'Renault', modelo: 'Clio V', ano: '2023', motor: '1.0 TCe 90cv', potencia: '90 CV', combustivel: 'Gasolina', transmissao: 'Manual 6v', cor: 'Branco Perolado', portas: '5', lugares: '5', classe: 'Ligeiro', co2: '118 g/km', consumo: '5.2 L/100km' },
         'BB-11-BB': { marca: 'Honda', modelo: 'CB 500F', ano: '2024', motor: '471cc Bicilíndrico', potencia: '47 CV', combustivel: 'Gasolina', transmissao: 'Manual 6v', cor: 'Vermelho Grand Prix', portas: '—', lugares: '2', classe: 'Motociclo', co2: '—', consumo: '3.5 L/100km' }
       };
-
       const v = veiculos[m] || { marca: 'Volkswagen', modelo: 'Golf GTI', ano: '2025', motor: '2.0 TSI', potencia: '245 CV', combustivel: 'Gasolina', transmissao: 'Automática DSG 7v', cor: 'Azul Lapiz', portas: '5', lugares: '5', classe: 'Ligeiro', co2: '149 g/km', consumo: '6.5 L/100km' };
 
       const pecas = [
